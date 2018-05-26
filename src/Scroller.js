@@ -4,55 +4,37 @@ import './main.css';
 export default class Scroller extends Component {
     scrollRef = React.createRef();
     state = {
-        topDiv: 0, 
-        bottomDiv: 0,
         topIndex: 0, 
         bottomIndex: 0,
     };
 
+    componentDidMount() {
+        this.handleScroll();
+    }
 
     handleScroll = () => {
-        const {current} = this.scrollRef;
-        const {elementHeight} = this.props;
-        
-        const topIndex = Math.floor(current.scrollTop/elementHeight);
-        const bottomIndex = Math.ceil((current.scrollTop + current.clientHeight)/elementHeight) > this.props.children.length ? 
-                                this.props.children.length
-                                : Math.ceil((current.scrollTop + current.clientHeight)/elementHeight);
-        const topDiv = topIndex * elementHeight;
-        const bottomDiv = (this.props.children.length - bottomIndex)*elementHeight;
-
-        this.setState({topIndex, bottomIndex, topDiv, bottomDiv});
-    }
-
-    componentDidMount() {
-        const {current} = this.scrollRef;
-        const {elementHeight} = this.props;
-        
-        const topIndex = Math.floor(current.scrollTop/elementHeight);
-        const bottomIndex = Math.ceil((current.scrollTop + current.clientHeight)/elementHeight);
-        const topDiv = topIndex * elementHeight;
-        const bottomDiv = (this.props.children.length - bottomIndex)*elementHeight;
-
-        this.setState({topIndex, bottomIndex, topDiv, bottomDiv});
-    }
+        const scroller = this.scrollRef.current;
+        const {elementHeight, children} = this.props;
+        this.setState({
+            topIndex: Math.floor(scroller.scrollTop / elementHeight),
+            bottomIndex: Math.min(Math.ceil((scroller.scrollTop + scroller.clientHeight) / elementHeight), children.length),
+        });
+    };
 
     render() {
-        let childArray = [];
+        const {elementHeight, children, renderChild} = this.props;
         const {topIndex, bottomIndex} = this.state;
 
+        const topHeight = topIndex * elementHeight;
+        const bottomHeight = (children.length - bottomIndex) * elementHeight;
 
-        for(let i = 0; i < (bottomIndex - topIndex); i++) {
-            childArray.push(this.props.children[i + topIndex]);
-        }
+        const visibleChildren = children.slice(topIndex, bottomIndex).map(renderChild);
 
         return (
             <div className="Scroller" ref={this.scrollRef} onScroll={this.handleScroll}>
-                <div className="topDiv" style={{height: this.state.topDiv}}/>
-                {childArray.map(element => {
-                    return this.props.renderChild(element);
-                })}
-                <div className="bottomDiv" style={{height: this.state.bottomDiv}}/>
+                <div style={{height: topHeight}} />
+                {visibleChildren}
+                <div style={{height: bottomHeight}} />
             </div>
         );
     }
