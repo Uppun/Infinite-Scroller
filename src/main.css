@@ -1,0 +1,9 @@
+.Scroller {
+    height: 500px;
+    max-height: 500px;
+    overflow: scroll;
+}
+
+.ChildElement {
+    height: 100px;
+}
