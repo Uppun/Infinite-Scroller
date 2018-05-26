@@ -16,9 +16,9 @@ export default class Scroller extends Component {
         const {elementHeight} = this.props;
         
         const topIndex = Math.floor(current.scrollTop/elementHeight);
-        const bottomIndex = Math.ceil((current.scrollTop + 500)/elementHeight) > this.props.children.length ? 
+        const bottomIndex = Math.ceil((current.scrollTop + current.height)/elementHeight) > this.props.children.length ? 
                                 this.props.children.length
-                                : Math.ceil((current.scrollTop + 500)/elementHeight);
+                                : Math.ceil((current.scrollTop + current.height)/elementHeight);
         const topDiv = topIndex * elementHeight;
         const bottomDiv = (this.props.children.length - bottomIndex)*elementHeight;
 
@@ -30,7 +30,7 @@ export default class Scroller extends Component {
         const {elementHeight} = this.props;
         
         const topIndex = Math.floor(current.scrollTop/elementHeight);
-        const bottomIndex = Math.ceil((current.scrollTop + 500)/elementHeight);
+        const bottomIndex = Math.ceil((current.scrollTop + current.height)/elementHeight);
         const topDiv = topIndex * elementHeight;
         const bottomDiv = (this.props.children.length - bottomIndex)*elementHeight;
 
